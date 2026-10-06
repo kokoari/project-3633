@@ -1,0 +1,587 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Project 3633 Hub</title>
+<meta name="description" content="Acceleration of Nonlinear Functions for Edge-AI Processors: final project 3633, Tel Aviv University.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: engineering-datasheet hub. Sticky section index on the left (pills on phones), one reading column, copper as the single accent. */
+:root {
+  --bg: #eceeec;
+  --surface: #f7f8f6;
+  --fg: #1b2124;
+  --muted: #586367;
+  --line: #d0d6d3;
+  --line-strong: #9aa4a2;
+  --accent: #9e5228;
+  --accent-soft: #f0e0d4;
+  --good: #2b7449;
+  --good-soft: #d9ecdf;
+  --warn: #8a5f00;
+  --warn-soft: #f4e7c9;
+  --code-bg: #e2e6e3;
+  --font-display: "Big Shoulders Display", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111517; --surface: #181d20; --fg: #e3e8e6; --muted: #96a2a6; --line: #2b3337; --line-strong: #56636a;
+    --accent: #e08b55; --accent-soft: #3a2519; --good: #6cc28f; --good-soft: #15301f; --warn: #e2b65a; --warn-soft: #33290f; --code-bg: #20272a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111517; --surface: #181d20; --fg: #e3e8e6; --muted: #96a2a6; --line: #2b3337; --line-strong: #56636a;
+  --accent: #e08b55; --accent-soft: #3a2519; --good: #6cc28f; --good-soft: #15301f; --warn: #e2b65a; --warn-soft: #33290f; --code-bg: #20272a;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 15px; line-height: 1.6; }
+a { color: var(--accent); text-underline-offset: 2px; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+p { margin: 0; }
+code, .mono { font-family: var(--font-mono); font-size: 0.88em; }
+code { background: var(--code-bg); padding: 1px 5px; border-radius: 4px; }
+
+.shell { max-width: 1120px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 72px; display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 48px; }
+nav.index { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 24px); align-self: start; display: flex; flex-direction: column; gap: 2px; }
+nav.index .label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+nav.index a { color: var(--muted); text-decoration: none; padding: 5px 10px; border-left: 2px solid var(--line); font-size: 14px; }
+nav.index a:hover { color: var(--fg); border-left-color: var(--accent); }
+main { min-width: 0; display: flex; flex-direction: column; gap: 64px; }
+
+section { display: flex; flex-direction: column; gap: 18px; scroll-margin-top: 72px; }
+.eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+h2 { font-family: var(--font-display); font-weight: 800; font-size: 34px; line-height: 1.05; letter-spacing: 0.01em; text-transform: uppercase; }
+h3 { font-size: 16px; font-weight: 600; }
+.lead { max-width: 66ch; color: var(--fg); }
+.prose { display: flex; flex-direction: column; gap: 12px; max-width: 68ch; }
+.prose ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
+
+/* hero */
+.hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 36px; align-items: start; }
+.hero h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(40px, 6vw, 64px); line-height: 0.95; text-transform: uppercase; letter-spacing: 0.005em; }
+.hero h1 span { color: var(--accent); }
+.hero .copy { display: flex; flex-direction: column; gap: 16px; }
+.figure { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 14px 10px; display: flex; flex-direction: column; gap: 6px; }
+.figure svg { width: 100%; height: auto; display: block; }
+.figure .cap { font-size: 12.5px; color: var(--muted); }
+.legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 12.5px; color: var(--muted); }
+.legend i { display: inline-block; width: 18px; height: 0; border-top: 2px solid var(--fg); vertical-align: middle; margin-right: 6px; }
+.legend i.plan { border-top: 2px dashed var(--accent); }
+svg text { font-family: var(--font-mono); font-size: 11px; fill: var(--muted); }
+.axis { stroke: var(--line-strong); stroke-width: 1; }
+.grid { stroke: var(--line); stroke-width: 1; }
+
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.stat { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.stat .k { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.stat .v { font-family: var(--font-display); font-weight: 800; font-size: 34px; line-height: 1; font-variant-numeric: tabular-nums; }
+.stat .v small { font-size: 18px; color: var(--muted); font-weight: 700; }
+.bar { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; display: flex; }
+.bar span { background: var(--good); height: 100%; }
+.bar span.doing { background: var(--warn); }
+
+/* tables */
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; vertical-align: top; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+tr:last-child td { border-bottom: 0; }
+th { font-family: var(--font-mono); font-weight: 500; font-size: 11.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); background: var(--bg); }
+td:first-child { font-weight: 500; }
+table.wide { min-width: 720px; }
+
+pre { margin: 0; background: var(--code-bg); border-radius: 10px; padding: 14px 16px; overflow-x: auto; font-family: var(--font-mono); font-size: 13px; line-height: 1.55; }
+pre code { background: none; padding: 0; font-size: inherit; }
+.formula { font-family: var(--font-mono); font-size: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; overflow-x: auto; white-space: nowrap; }
+.diagram { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
+.diagram svg { min-width: 620px; width: 100%; height: auto; display: block; }
+.diagram text { font-family: var(--font-body); font-size: 13px; fill: var(--fg); }
+.diagram .q { fill: var(--muted); font-size: 11.5px; }
+.diagram .box { fill: none; stroke: var(--line-strong); stroke-width: 1.25; }
+.diagram .hot { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2; }
+.diagram .wire { fill: none; stroke: var(--line-strong); stroke-width: 1.25; }
+.diagram .arrowhead { fill: var(--line-strong); }
+
+/* editable lists */
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+.list { list-style: none; margin: 0; padding: 0; }
+.list > li { border-bottom: 1px solid var(--line); }
+.list > li:last-child { border-bottom: 0; }
+.empty { padding: 18px 16px; color: var(--muted); font-size: 14px; }
+.notice { font-size: 13.5px; color: var(--muted); background: var(--surface); border: 1px dashed var(--line-strong); border-radius: 10px; padding: 10px 14px; }
+
+input[type="text"], input[type="url"], input[type="date"], textarea, select {
+  font: inherit; color: var(--fg); background: transparent; border: 1px solid transparent; border-radius: 6px; padding: 5px 8px; min-width: 0; width: 100%;
+}
+input[type="text"]:hover, input[type="url"]:hover, textarea:hover, select:hover, input[type="date"]:hover { border-color: var(--line); }
+input:focus, textarea:focus, select:focus { border-color: var(--accent); outline: none; background: var(--bg); }
+textarea { resize: vertical; min-height: 38px; line-height: 1.5; }
+.form input, .form textarea, .form select { border-color: var(--line); background: var(--bg); }
+input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--good); margin: 0; }
+button { font: inherit; cursor: pointer; }
+.btn { background: var(--fg); color: var(--bg); border: 0; border-radius: 7px; padding: 7px 14px; font-weight: 500; font-size: 14px; white-space: nowrap; }
+.btn:hover { background: var(--accent); }
+.ghost { background: none; border: 0; color: var(--muted); font-size: 12.5px; padding: 4px 6px; border-radius: 5px; white-space: nowrap; }
+.ghost:hover { color: var(--fg); background: var(--bg); }
+.ghost.armed { color: var(--bg); background: var(--accent); }
+.ro .write-only { display: none !important; }
+.ro input, .ro textarea, .ro select { pointer-events: none; }
+
+/* milestones */
+.ms { display: grid; grid-template-columns: 92px minmax(0, 1fr) 110px 110px; gap: 12px; align-items: center; padding: 10px 14px; }
+.ms-phase, .ms-due { font-family: var(--font-mono); font-size: 12.5px; color: var(--muted); }
+.ms-due { text-align: right; font-variant-numeric: tabular-nums; }
+.pill { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: 0.04em; text-transform: uppercase; border: 0; border-radius: 999px; padding: 4px 10px; text-align: center; }
+.pill[data-s="todo"] { background: var(--bg); color: var(--muted); box-shadow: inset 0 0 0 1px var(--line); }
+.pill[data-s="doing"] { background: var(--warn-soft); color: var(--warn); }
+.pill[data-s="done"] { background: var(--good-soft); color: var(--good); }
+.ms[data-s="done"] .ms-title { color: var(--muted); }
+
+/* readings */
+.rd { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 12px; padding: 12px 14px; align-items: start; }
+.rd .chk { padding-top: 3px; }
+.rd .body { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.rd .ttl { font-weight: 500; overflow-wrap: anywhere; }
+.rd .meta { font-family: var(--font-mono); font-size: 11.5px; color: var(--muted); letter-spacing: 0.03em; }
+.rd .note { font-size: 14px; color: var(--muted); max-width: 70ch; }
+.rd[data-done="true"] .ttl { text-decoration: line-through; text-decoration-color: var(--line-strong); color: var(--muted); }
+.subhead { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 12px 14px 8px; border-bottom: 1px solid var(--line); }
+.subhead h3 { font-family: var(--font-mono); font-weight: 500; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+
+/* log */
+.lg { display: grid; grid-template-columns: 104px minmax(0, 1fr); gap: 14px; padding: 14px 16px; align-items: start; }
+.lg .date { font-family: var(--font-mono); font-size: 13px; color: var(--muted); padding-top: 2px; font-variant-numeric: tabular-nums; }
+.lg .txt { white-space: pre-wrap; overflow-wrap: anywhere; }
+.lg .who { display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--muted); margin-top: 6px; }
+.lg .who img { width: 18px; height: 18px; border-radius: 50%; }
+
+/* questions */
+.qa { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 12px; padding: 12px 14px; align-items: start; }
+.qa .chk { padding-top: 3px; }
+.qa .q-text { font-weight: 500; }
+.qa textarea { font-size: 14px; color: var(--muted); }
+
+.form { display: grid; gap: 10px; padding: 14px; border-top: 1px solid var(--line); background: var(--bg); border-radius: 0 0 10px 10px; }
+.form .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.form .row > * { flex: 1 1 160px; }
+.form .row > .btn { flex: 0 0 auto; }
+
+.toast { position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 20px); transform: translateX(-50%); background: var(--fg); color: var(--bg); padding: 10px 16px; border-radius: 8px; font-size: 14px; max-width: calc(100vw - 32px); }
+
+.tick { display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 5px; border: 1.5px solid var(--line-strong); font-size: 12px; font-weight: 600; color: var(--surface); }
+.tick.on { background: var(--good); border-color: var(--good); }
+.qa .answer { font-size: 14px; color: var(--fg); margin-top: 4px; white-space: pre-wrap; }
+.qa .answer.pending { color: var(--muted); font-style: italic; }
+.foot { max-width: 1120px; margin: 0 auto; padding-inline: 20px; padding-block: 0 40px; display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 13px; color: var(--muted); }
+.foot a { margin-left: auto; }
+@media (max-width: 960px) {
+  .shell { grid-template-columns: minmax(0, 1fr); gap: 24px; padding-block: 0 64px; }
+  nav.index { flex-direction: row; overflow-x: auto; gap: 6px; padding-block: 10px; margin-inline: -20px; padding-inline: 20px; background: var(--bg); border-bottom: 1px solid var(--line); z-index: 5; top: env(safe-area-inset-top, 0px); }
+  nav.index .label { display: none; }
+  nav.index a { border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; white-space: nowrap; font-size: 13px; }
+  .hero { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 640px) {
+  h2 { font-size: 28px; }
+  .stats { grid-template-columns: minmax(0, 1fr); }
+  .ms { grid-template-columns: 84px minmax(0, 1fr); }
+  .ms-phase, .ms-due { grid-column: 2 / 3; text-align: left; }
+  .lg { grid-template-columns: minmax(0, 1fr); }
+  .lg .date { grid-column: 1 / -1; padding: 0; }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; } }
+html { scroll-behavior: smooth; }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+</head>
+<body>
+
+<div class="shell" id="app">
+  <nav class="index" aria-label="Sections">
+    <span class="label">Project 3633</span>
+    <a href="#overview">Overview</a>
+    <a href="#plan">Milestones</a>
+    <a href="#log">Progress log</a>
+    <a href="#reading">Reading list</a>
+    <a href="#concepts">Core concepts</a>
+    <a href="#integration">Processor integration</a>
+    <a href="#measure">Measurement</a>
+    <a href="#questions">Supervisor questions</a>
+  </nav>
+
+  <main>
+    <section id="overview">
+      <div class="hero">
+        <div class="copy">
+          <div class="eyebrow">Tel Aviv University · Final project 3633 · Supervisor Oren Ganon</div>
+          <h1>Acceleration of <span>nonlinear functions</span> for Edge-AI processors</h1>
+          <p class="lead">We design Verilog units for ReLU, Sigmoid, Tanh and Softmax, attach them to a small processor as custom instructions, and show on an FPGA that a real Edge-AI demo runs faster with little loss of accuracy.</p>
+        </div>
+        <figure class="figure" style="margin:0">
+          <svg viewBox="0 0 600 284" role="img" aria-label="Exact sigmoid compared with the 4-segment PLAN approximation, with the absolute error below">
+            <g id="chartGrid"></g>
+            <path id="exactPath" fill="none" stroke="var(--fg)" stroke-width="2"></path>
+            <path id="planPath" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="6 4"></path>
+            <path id="errPath" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.25"></path>
+            <text id="errLabel" x="584" y="226" text-anchor="end"></text>
+          </svg>
+          <div class="legend"><span><i></i>σ(x), exact</span><span><i class="plan"></i>PLAN: 4 segments, shifts and adds only</span></div>
+          <p class="cap">Lower strip: absolute error of the hardware approximation, x from −8 to 8.</p>
+        </figure>
+      </div>
+
+      <div class="stats" aria-live="polite">
+        <div class="stat"><span class="k">Milestones done</span><span class="v" id="statMs">–</span><div class="bar" id="statMsBar"></div></div>
+        <div class="stat"><span class="k">Readings finished</span><span class="v" id="statRd">–</span><div class="bar" id="statRdBar"></div></div>
+        <div class="stat"><span class="k">Last log entry</span><span class="v" id="statLog" style="font-size:26px">–</span><span class="cap mono" id="statLogSub" style="font-size:12px;color:var(--muted)"></span></div>
+      </div>
+      <p class="notice" id="storeNotice" hidden></p>
+
+      <div class="tablewrap">
+        <table>
+          <tbody>
+            <tr><td>Goal</td><td>Hardware units for neural-network activation functions built on fixed-point arithmetic, lookup tables and piecewise approximation, replacing slow C implementations.</td></tr>
+            <tr><td>Integration</td><td>The units become new instructions, or a tightly coupled block, of a simple processor on an FPGA.</td></tr>
+            <tr><td>Demo</td><td>A small Edge-AI system with a real sensor (camera, microphone or IMU). Example: a small CNN on a camera image, run first in software, then with the hardware units.</td></tr>
+            <tr><td>Benchmarks</td><td>ReLU in a small fully connected layer · Sigmoid/Tanh in a simple classifier · Softmax on a small network's output · image, motion-sensor and audio classification · software vs. full hardware support.</td></tr>
+            <tr><td>Clock target</td><td><span class="mono">≥ 100 MHz</span> with the processor and units together; stretch goal about <span class="mono">150 MHz</span>.</td></tr>
+            <tr><td>We report</td><td>Inference time, cycle count, accuracy vs. exact software, area (LUTs, registers, DSPs, BRAMs), and LUT vs. piecewise trade-offs.</td></tr>
+            <tr><td>Background</td><td>Logic Design, Computer Structure, Advanced Computer Architecture Lab. Verilog, C and fixed-point help; ML, image processing or Signals and Systems are a plus.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="plan">
+      <div class="eyebrow">Tracked</div>
+      <h2>Milestones</h2>
+      <p class="lead">Where the project stands, step by step. Updated as we go.</p>
+      <div class="panel">
+        <ul class="list" id="msList"></ul>
+        <p class="empty" id="msEmpty">Loading milestones…</p>
+      </div>
+    </section>
+
+    <section id="log">
+      <div class="eyebrow">Tracked</div>
+      <h2>Progress log</h2>
+      <p class="lead">A dated record of what we did, decided and learned. Newest first.</p>
+      <div class="panel">
+        <ul class="list" id="logList"></ul>
+        <p class="empty" id="logEmpty">Loading the log…</p>
+      </div>
+    </section>
+
+    <section id="reading">
+      <div class="eyebrow">Tracked</div>
+      <h2>Reading list</h2>
+      <p class="lead">What we are reading, with a note on what to take from each.</p>
+      <div class="panel">
+        <div class="subhead"><h3>From the instructor</h3><span class="mono" id="rdCountI" style="font-size:12px;color:var(--muted)"></span></div>
+        <ul class="list" id="rdListI"></ul>
+        <div class="subhead" style="border-top:1px solid var(--line)"><h3>Added materials</h3><span class="mono" id="rdCountA" style="font-size:12px;color:var(--muted)"></span></div>
+        <ul class="list" id="rdListA"></ul>
+        <p class="empty" id="rdEmpty">Loading the reading list…</p>
+      </div>
+    </section>
+
+    <section id="concepts">
+      <div class="eyebrow">Reference</div>
+      <h2>Core concepts</h2>
+      <p class="lead">Activation functions run after every layer, and most need exponentials and division. On a small integer core with no FPU, that is where inference stalls. The engineering is a three-way trade: accuracy, area and speed.</p>
+
+      <h3>Fixed-point arithmetic</h3>
+      <div class="prose">
+        <p>A Qm.n number is an integer read with n fractional bits. 16-bit <span class="mono">Q4.12</span> covers about −8 to +8 with a step of 1/4096 ≈ 0.00024.</p>
+        <ul>
+          <li>Multiplying two Qm.n values gives 2n fractional bits; shift right by n afterwards and choose truncate or round.</li>
+          <li>Overflow must saturate (clip), not wrap, or a large activation flips sign.</li>
+          <li>Match the model's format. Many TinyML models use int8 with a scale factor; confirm early.</li>
+        </ul>
+      </div>
+
+      <h3>Shortcuts each function allows</h3>
+      <div class="prose">
+        <ul>
+          <li><b>ReLU</b>: check the sign bit and output x or 0. A mux, zero error.</li>
+          <li><b>Sigmoid</b> is symmetric, σ(−x) = 1 − σ(x): build the positive half and mirror it. Beyond |x| ≈ 8 the output is within 0.0004 of 0 or 1.</li>
+          <li><b>Tanh</b> is a scaled sigmoid, tanh(x) = 2σ(2x) − 1. One unit can serve both.</li>
+          <li><b>Softmax</b>: subtract the maximum first so every e<sup>x</sup> lies in (0, 1], then one reciprocal of the sum and one multiply per element.</li>
+        </ul>
+      </div>
+      <div class="formula">softmax(x<sub>i</sub>) = e<sup>x<sub>i</sub> − x<sub>max</sub></sup> / Σ<sub>j</sub> e<sup>x<sub>j</sub> − x<sub>max</sub></sup></div>
+
+      <h3>Approximation techniques</h3>
+      <div class="tablewrap">
+        <table class="wide">
+          <thead><tr><th>Technique</th><th>How it works</th><th>Hardware cost</th><th>Latency</th><th>Best for</th></tr></thead>
+          <tbody>
+            <tr><td>Lookup table</td><td>Input bits address a ROM of precomputed outputs</td><td>Memory doubles per extra input bit</td><td class="mono">1 cycle</td><td>Few input bits (int8)</td></tr>
+            <tr><td>Piecewise linear</td><td>Slope and offset per segment: y = a·x + b</td><td>One multiplier (often a DSP) + small table</td><td class="mono">1–2 cycles</td><td>Sigmoid/Tanh at 16 bits</td></tr>
+            <tr><td>PLAN</td><td>Piecewise linear with power-of-two slopes</td><td>Shifts and adds, no multiplier</td><td class="mono">1 cycle</td><td>Smallest area; max error ≈ 1.9%</td></tr>
+            <tr><td>Polynomial</td><td>a·x² + b·x + c, often per segment</td><td>Two multipliers, or one reused</td><td class="mono">2–3 cycles</td><td>The exponential in Softmax</td></tr>
+            <tr><td>CORDIC</td><td>Iterative shift-add rotations (hyperbolic mode)</td><td>Adders and shifters only</td><td class="mono">≈1 cycle per bit</td><td>When DSPs are scarce</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="prose">
+        <p>The classic PLAN sigmoid (Amin et al., 1997) uses segments at |x| &lt; 1, 1–2.375, 2.375–5 and ≥ 5, with slopes 1/4, 1/8, 1/32 and 0. It is the curve in the chart at the top and a good first Verilog exercise.</p>
+        <p>For Softmax's exponential, I-BERT writes the input as a multiple of ln 2 plus a small remainder, so e<sup>x</sup> = 2<sup>−z</sup> × e<sup>p</sup>. The 2<sup>−z</sup> part is a right shift; e<sup>p</sup> needs only a 2nd-order polynomial on (−ln 2, 0].</p>
+        <p>Test every unit against a double-precision reference over every input. For 16-bit inputs that is 65,536 values. Report max and mean error per function, then end-to-end classification accuracy.</p>
+      </div>
+    </section>
+
+    <section id="integration">
+      <div class="eyebrow">Reference</div>
+      <h2>Processor integration</h2>
+      <p class="lead">Each unit becomes a new instruction. The decoder recognizes a reserved opcode, routes two register values to our unit instead of the ALU, and writes the result back. Fetch, registers and writeback stay as they are.</p>
+      <div class="diagram">
+        <svg viewBox="0 0 760 290" role="img" aria-label="A custom instruction swaps the ALU for the activation unit">
+          <defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path class="arrowhead" d="M0 0L10 5L0 10z"/></marker></defs>
+          <g>
+            <path class="wire" d="M136 154H156" marker-end="url(#arr)"/>
+            <path class="wire" d="M268 154H286" marker-end="url(#arr)"/>
+            <path class="wire" d="M350 114V90H438" marker-end="url(#arr)"/>
+            <path class="wire" d="M350 194V226H438" marker-end="url(#arr)"/>
+            <path class="wire" d="M634 90H696V130" marker-end="url(#arr)"/>
+            <path class="wire" d="M634 226H696V178" marker-end="url(#arr)"/>
+          </g>
+          <rect class="box" x="24" y="130" width="112" height="48" rx="8"/><text x="80" y="158" text-anchor="middle">Fetch</text>
+          <rect class="box" x="156" y="130" width="112" height="48" rx="8"/><text x="212" y="158" text-anchor="middle">Decode</text>
+          <polygon class="box" points="286,154 350,114 414,154 350,194"/><text x="350" y="158" text-anchor="middle">custom-0?</text>
+          <rect class="box" x="438" y="66" width="196" height="48" rx="8"/><text x="536" y="94" text-anchor="middle">ALU (standard ops)</text>
+          <rect class="hot" x="438" y="190" width="196" height="72" rx="8"/>
+          <text x="536" y="214" text-anchor="middle" font-weight="600">Activation unit</text>
+          <text x="536" y="230" text-anchor="middle" style="font-size:11.5px">ReLU · Sigmoid · Tanh · Exp</text>
+          <text class="q" x="536" y="246" text-anchor="middle">funct3 selects the function</text>
+          <rect class="box" x="656" y="130" width="80" height="48" rx="8"/><text x="696" y="158" text-anchor="middle">Write rd</text>
+          <text class="q" x="358" y="106">no</text>
+          <text class="q" x="358" y="220">yes</text>
+          <text x="24" y="34" font-weight="600" style="font-size:15px">A custom instruction swaps the ALU for our activation unit</text>
+        </svg>
+      </div>
+
+      <h3>Instruction encoding</h3>
+      <div class="prose"><p>RISC-V reserves <b>custom-0</b> (opcode <span class="mono">0001011</span>) and <b>custom-1</b> (<span class="mono">0101011</span>) for designers, so new instructions keep the core standard-compliant. R-type: rs1 and rs2 in, rd out, funct3/funct7 pick the function. A possible map:</p></div>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>funct3</th><th>Instruction</th><th>Operation</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">000</td><td class="mono">act.relu rd, rs1</td><td>max(0, rs1)</td></tr>
+            <tr><td class="mono">001</td><td class="mono">act.sig rd, rs1</td><td>σ(rs1)</td></tr>
+            <tr><td class="mono">010</td><td class="mono">act.tanh rd, rs1</td><td>tanh(rs1)</td></tr>
+            <tr><td class="mono">011</td><td class="mono">act.exp rd, rs1</td><td>e<sup>rs1</sup> for rs1 ≤ 0 (Softmax step)</td></tr>
+            <tr><td class="mono">100</td><td class="mono">act.recip rd, rs1</td><td>1 / rs1 (Softmax normalization)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="prose">
+        <p>If the supervisor's processor is not RISC-V, the same idea applies: find unused opcodes and extend the decoder.</p>
+        <ul>
+          <li><b>Tightly coupled</b>: the unit sits beside the ALU. Lowest overhead; right for ReLU, Sigmoid, Tanh. A multi-cycle unit must stall the pipeline.</li>
+          <li><b>Memory-mapped</b>: a bus peripheral the CPU writes and reads. More overhead per value, but it can hold a whole vector, which suits Softmax.</li>
+          <li><b>Middle path for Softmax</b>: a few custom instructions plus a small internal state (running max and running sum).</li>
+        </ul>
+      </div>
+
+      <h3>Software side</h3>
+      <div class="prose"><p>The compiler does not know our instructions. The GNU assembler's <code>.insn</code> directive emits them from inline assembly. Wrap each in a C function with a plain C fallback chosen by a flag, so the same model code builds both ways for a fair comparison.</p></div>
+      <pre><code>static inline int32_t act_sig(int32_t x) {
+#ifdef USE_HW_ACT
+    int32_t y;
+    asm volatile (".insn r 0x0B, 1, 0, %0, %1, x0" : "=r"(y) : "r"(x));
+    return y;
+#else
+    return sigmoid_q12_sw(x);   /* reference C version */
+#endif
+}</code></pre>
+      <div class="prose"><p>Which processor? Ask first: the supervisor's 2023 NEWCAS paper describes his own small modular RISC processor built for custom-instruction extensions. Open-source options built for this: <a href="https://github.com/stnolting/neorv32" target="_blank" rel="noopener">NEORV32</a> (Custom Functions Unit), PicoRV32 (coprocessor interface), and VexRiscv inside <a href="https://github.com/google/CFU-Playground" target="_blank" rel="noopener">CFU Playground</a>.</p></div>
+    </section>
+
+    <section id="measure">
+      <div class="eyebrow">Reference</div>
+      <h2>Measurement</h2>
+      <p class="lead">Every result compares the software baseline against each hardware version, on the same model and the same inputs.</p>
+      <div class="tablewrap">
+        <table class="wide">
+          <thead><tr><th>Metric</th><th>How to measure</th><th>Watch out for</th></tr></thead>
+          <tbody>
+            <tr><td>Cycles per activation</td><td>Read <code>mcycle</code> before and after a loop of calls</td><td>Loop overhead: time an empty loop and subtract</td></tr>
+            <tr><td>Inference time</td><td>Cycles for a full forward pass ÷ clock frequency</td><td>Report both activation-only and whole-inference speedup</td></tr>
+            <tr><td>Accuracy</td><td>Max and mean error per function; classification accuracy on a test set</td><td>Small per-function error can flip close classifications</td></tr>
+            <tr><td>Area</td><td>Synthesis report: LUTs, registers, DSPs, BRAMs, with and without the units</td><td>Report the increase as % of the base processor</td></tr>
+            <tr><td>Clock</td><td>Timing report at 100 MHz, then push toward 150 MHz</td><td>A new execute-stage unit can become the critical path; pipeline it</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="prose"><p>The main deliverable is a trade-off study: for each function, which technique gives the best balance of area, speed and accuracy. One chart of error vs. LUT count per design will carry most of the final report.</p></div>
+    </section>
+
+    <section id="questions">
+      <div class="eyebrow">Tracked</div>
+      <h2>Supervisor questions</h2>
+      <p class="lead">Open questions for Oren, and his answers once we have them.</p>
+      <div class="panel">
+        <ul class="list" id="qList"></ul>
+        <p class="empty" id="qEmpty">Loading questions…</p>
+      </div>
+    </section>
+  </main>
+</div>
+<div class="toast" id="toast" hidden role="status"></div>
+
+<script>
+(() => {
+  /* ---------- hero chart ---------- */
+  const X = x => 40 + (x + 8) / 16 * 544;
+  const Y = y => 190 - 168 * y;
+  const YE = e => 256 - 36 * e / 0.02;
+  const sig = x => 1 / (1 + Math.exp(-x));
+  const plan = x => { const a = Math.abs(x); let y; if (a >= 5) y = 1; else if (a >= 2.375) y = 0.03125 * a + 0.84375; else if (a >= 1) y = 0.125 * a + 0.625; else y = 0.25 * a + 0.5; return x < 0 ? 1 - y : y; };
+  let pe = '', pp = '', perr = `M${X(-8)} ${YE(0)}`, maxErr = 0;
+  for (let i = 0; i <= 640; i++) {
+    const x = -8 + i * 16 / 640, e = Math.abs(sig(x) - plan(x));
+    maxErr = Math.max(maxErr, e);
+    pe += `${i ? 'L' : 'M'}${X(x).toFixed(1)} ${Y(sig(x)).toFixed(1)}`;
+    pp += `${i ? 'L' : 'M'}${X(x).toFixed(1)} ${Y(plan(x)).toFixed(1)}`;
+    perr += `L${X(x).toFixed(1)} ${YE(Math.min(e, 0.02)).toFixed(1)}`;
+  }
+  perr += `L${X(8)} ${YE(0)}Z`;
+  document.getElementById('exactPath').setAttribute('d', pe);
+  document.getElementById('planPath').setAttribute('d', pp);
+  document.getElementById('errPath').setAttribute('d', perr);
+  document.getElementById('errLabel').textContent = `max |error| ${maxErr.toFixed(4)}`;
+  const g = document.getElementById('chartGrid'), NS = 'http://www.w3.org/2000/svg';
+  const el = (tag, attrs, text) => { const n = document.createElementNS(NS, tag); for (const k in attrs) n.setAttribute(k, attrs[k]); if (text != null) n.textContent = text; g.appendChild(n); return n; };
+  [0, 0.5, 1].forEach(v => { el('line', { class: v === 0 ? 'axis' : 'grid', x1: 40, x2: 584, y1: Y(v), y2: Y(v) }); el('text', { x: 34, y: Y(v) + 4, 'text-anchor': 'end' }, String(v)); });
+  [-8, -4, 0, 4, 8].forEach(v => { el('line', { class: 'grid', x1: X(v), x2: X(v), y1: Y(1), y2: Y(0) }); el('text', { x: X(v), y: 276, 'text-anchor': 'middle' }, String(v)); });
+  el('line', { class: 'axis', x1: 40, x2: 584, y1: YE(0), y2: YE(0) });
+  el('line', { class: 'grid', x1: 40, x2: 584, y1: YE(0.02), y2: YE(0.02) });
+  el('text', { x: 34, y: YE(0.02) + 4, 'text-anchor': 'end' }, '0.02');
+  el('text', { x: 34, y: YE(0) + 4, 'text-anchor': 'end' }, '0');
+
+  /* ---------- progress data (progress.yml) ---------- */
+  const $ = id => document.getElementById(id);
+  const STATUS = { todo: 'To do', doing: 'Doing', done: 'Done' };
+  const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const iso = v => {
+    if (!v) return '';
+    if (v instanceof Date) return v.toISOString().slice(0, 10);
+    return String(v).slice(0, 10);
+  };
+  const fmtDate = v => { const s = iso(v); if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return s; const [y, m, d] = s.split('-').map(Number); return `${d} ${MONTHS[m - 1]} ${y}`; };
+  const make = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
+  const safeUrl = u => (typeof u === 'string' && /^https?:\/\//.test(u)) ? u : '';
+  const setEmpty = (id, n, msg) => { const e = $(id); e.hidden = n > 0; e.textContent = msg; };
+
+  function renderMilestones(list) {
+    const ul = $('msList'); ul.textContent = '';
+    list.forEach(m => {
+      const s = STATUS[m.status] ? m.status : 'todo';
+      const li = make('li', 'ms'); li.dataset.s = s;
+      const pill = make('span', 'pill', STATUS[s]); pill.dataset.s = s;
+      li.append(pill, make('span', 'ms-title', m.title || ''), make('span', 'ms-phase', m.phase || ''), make('span', 'ms-due', m.due ? fmtDate(m.due) : ''));
+      ul.append(li);
+    });
+    setEmpty('msEmpty', list.length, 'No milestones yet.');
+    const done = list.filter(m => m.status === 'done').length, doing = list.filter(m => m.status === 'doing').length, n = list.length;
+    $('statMs').innerHTML = `${done}<small> / ${n}</small>`;
+    $('statMsBar').innerHTML = n ? `<span style="width:${done / n * 100}%"></span><span class="doing" style="width:${doing / n * 100}%"></span>` : '';
+  }
+
+  function renderLog(list) {
+    const items = [...list].sort((a, b) => iso(b.date).localeCompare(iso(a.date)));
+    const ul = $('logList'); ul.textContent = '';
+    items.forEach(e => {
+      const li = make('li', 'lg');
+      const main = make('div');
+      main.append(make('div', 'txt', e.text || ''));
+      if (e.by) main.append(make('div', 'who', e.by));
+      li.append(make('div', 'date', fmtDate(e.date)), main);
+      ul.append(li);
+    });
+    setEmpty('logEmpty', items.length, 'No entries yet.');
+    $('statLog').textContent = items.length ? fmtDate(items[0].date) : 'None yet';
+    $('statLogSub').textContent = items.length ? `${items.length} ${items.length === 1 ? 'entry' : 'entries'}` : '';
+  }
+
+  function readingItem(r) {
+    const li = make('li', 'rd'); li.dataset.done = String(!!r.done);
+    const mark = make('div', 'chk'); mark.append(make('span', 'tick' + (r.done ? ' on' : ''), r.done ? '✓' : ''));
+    mark.firstChild.setAttribute('aria-label', r.done ? 'Read' : 'Not read yet');
+    const body = make('div', 'body');
+    const ttl = make('div', 'ttl');
+    const url = safeUrl(r.url);
+    if (url) { const a = make('a', null, r.title || url); a.href = url; a.target = '_blank'; a.rel = 'noopener'; ttl.append(a); } else ttl.textContent = r.title || '';
+    body.append(ttl);
+    const meta = [r.kind, r.priority].filter(Boolean).join(' · ');
+    if (meta) body.append(make('div', 'meta', meta));
+    if (r.note) body.append(make('p', 'note', r.note));
+    li.append(mark, body);
+    return li;
+  }
+  function renderReadings(groups) {
+    const I = groups.instructor || [], A = groups.added || [];
+    $('rdListI').textContent = ''; I.forEach(r => $('rdListI').append(readingItem(r)));
+    $('rdListA').textContent = ''; A.forEach(r => $('rdListA').append(readingItem(r)));
+    const cnt = arr => arr.length ? `${arr.filter(r => r.done).length} / ${arr.length} read` : 'none yet';
+    $('rdCountI').textContent = cnt(I); $('rdCountA').textContent = cnt(A);
+    const all = [...I, ...A], d = all.filter(r => r.done).length;
+    setEmpty('rdEmpty', all.length, 'No readings yet.');
+    $('statRd').innerHTML = `${d}<small> / ${all.length}</small>`;
+    $('statRdBar').innerHTML = all.length ? `<span style="width:${d / all.length * 100}%"></span>` : '';
+  }
+
+  function renderQuestions(list) {
+    const items = [...list].sort((a, b) => (!!a.settled === !!b.settled ? 0 : a.settled ? 1 : -1));
+    const ul = $('qList'); ul.textContent = '';
+    items.forEach(q => {
+      const li = make('li', 'qa');
+      const mark = make('div', 'chk'); mark.append(make('span', 'tick' + (q.settled ? ' on' : ''), q.settled ? '✓' : ''));
+      const body = make('div');
+      const t = make('div', 'q-text', q.question || ''); if (q.settled) t.style.color = 'var(--muted)';
+      body.append(t, make('p', 'answer' + (q.answer ? '' : ' pending'), q.answer || 'No answer yet'));
+      li.append(mark, body);
+      ul.append(li);
+    });
+    setEmpty('qEmpty', items.length, 'No questions yet.');
+  }
+
+  function fail(msg) {
+    const n = $('storeNotice'); n.textContent = msg; n.hidden = false;
+    ['msEmpty', 'logEmpty', 'rdEmpty', 'qEmpty'].forEach(id => { $(id).textContent = 'Progress data could not be loaded.'; });
+  }
+
+  fetch('progress.yml', { cache: 'no-cache' })
+    .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.text(); })
+    .then(text => {
+      let data;
+      try { data = jsyaml.load(text) || {}; }
+      catch (e) { fail(`progress.yml has a formatting error near line ${(e.mark && e.mark.line + 1) || '?'}: ${e.reason || e.message}. Fix it on GitHub and the page will load again.`); return; }
+      renderMilestones(Array.isArray(data.milestones) ? data.milestones : []);
+      renderLog(Array.isArray(data.log) ? data.log : []);
+      renderReadings(data.readings || {});
+      renderQuestions(Array.isArray(data.questions) ? data.questions : []);
+      if (data.repo && /^[\w.-]+\/[\w.-]+$/.test(data.repo)) {
+        const a = $('editLink'); a.href = `https://github.com/${data.repo}/edit/${data.branch || 'main'}/progress.yml`; a.hidden = false;
+      }
+    })
+    .catch(() => fail(location.protocol === 'file:'
+      ? 'Open this site through GitHub Pages (or a local web server) to load progress.yml. Browsers block it when the file is opened directly.'
+      : 'progress.yml could not be loaded. Check that it sits next to index.html in the repository.'));
+})();
+</script>
+<footer class="foot">
+  <span>Project 3633 · Tel Aviv University</span>
+  <a id="editLink" href="#" target="_blank" rel="noopener" hidden>Edit progress on GitHub</a>
+</footer>
+</body>
+</html>

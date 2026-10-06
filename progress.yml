@@ -1,0 +1,201 @@
+# Project 3633 progress
+# Edit this file on GitHub (pencil icon), then "Commit changes".
+# The website updates about a minute later.
+#
+# Rules that keep the file valid:
+#   - Indent with spaces, never tabs. Keep the same indentation as the lines around you.
+#   - Dates are written YYYY-MM-DD.
+#   - If a line of text contains a colon followed by a space (": "), wrap the text in double quotes.
+#   - status is one of: todo, doing, done
+
+# Your GitHub "username/repository", used for the "Edit progress on GitHub" link
+repo: kokoari/project-3633
+branch: main
+
+# ---------------------------------------------------------------- milestones
+# Order here is the order on the site. due is optional.
+milestones:
+  - title: Kickoff meeting - confirm processor, FPGA board and number format
+    phase: Setup
+    status: todo
+    due:
+  - title: Literature review of the instructor list and added materials
+    phase: Research
+    status: doing
+    due:
+  - title: Fixed-point C reference models and error-measurement script
+    phase: Algorithms
+    status: todo
+    due:
+  - title: First RTL unit - PLAN sigmoid with self-checking testbench
+    phase: RTL
+    status: todo
+    due:
+  - title: Base processor running on the FPGA (hello world)
+    phase: Integration
+    status: todo
+    due:
+  - title: First custom instruction end to end (ReLU)
+    phase: Integration
+    status: todo
+    due:
+  - title: Sigmoid and Tanh units - LUT vs. piecewise variants
+    phase: RTL
+    status: todo
+    due:
+  - title: Softmax unit (exp and reciprocal)
+    phase: RTL
+    status: todo
+    due:
+  - title: Benchmarks - cycles, accuracy, area at 100 MHz
+    phase: Evaluation
+    status: todo
+    due:
+  - title: Timing push toward 150 MHz
+    phase: Evaluation
+    status: todo
+    due:
+  - title: Sensor demo running on the FPGA
+    phase: Demo
+    status: todo
+    due:
+  - title: Final report and presentation
+    phase: Wrap-up
+    status: todo
+    due:
+
+# ---------------------------------------------------------------- progress log
+# Add new entries anywhere; the site sorts them newest first.
+# Use | for text that runs over several lines.
+log:
+  - date: 2026-10-06
+    by: Ariel
+    text: Project kickoff. Received the project description and reading list from Oren Ganon; wrote the study guide and set up this site.
+
+# ---------------------------------------------------------------- reading list
+# Set done: true when you finish an item.
+readings:
+  instructor:
+    - title: Extending RISC-V ISA With a Custom Instruction Set Extension
+      url: https://www.design-reuse.com/article/61135-extending-risc-v-isa-with-a-custom-instruction-set-extension/
+      kind: Codasip whitepaper, 2019
+      priority: Read first
+      done: false
+      note: Full flow for one new instruction - hot spot, encoding, ALU change, C access, verification. Copy its library pattern (hardware instruction with a plain C fallback).
+    - title: Modular Processor Architecture with Cryptography ISA Extensions
+      url: https://ieeexplore.ieee.org/document/10198046
+      kind: O. Ganon, I. Levi - IEEE NEWCAS 2023
+      priority: Read closely
+      done: false
+      note: Written by our supervisor. A tiny RISC core extended with low-cost crypto instructions; likely the template for this project. Get the PDF through TAU's IEEE access.
+    - title: Vectorized Nonlinear Functions with the RISC-V Vector Extension
+      url: https://ieeexplore.ieee.org/document/10461486/
+      kind: Bavier et al. (SiFive) - IEEE ARITH 2023
+      priority: Skim for the math
+      done: false
+      note: The software side of the same problem - fast exp and tanh on RISC-V. Useful for range reduction and polynomial approximation.
+    - title: "Digital Systems: From Logic Gates to Processors"
+      url: https://www.coursera.org/learn/digital-systems
+      kind: Coursera, UAB - 11 modules
+      priority: Optional review
+      done: false
+      note: Mostly review after Logic Design; the simple-processor modules are the useful part. Uses VHDL.
+    - title: "#1 - Introduction to FPGA and Verilog"
+      url: https://www.youtube.com/watch?v=yvqkg44_DQA
+      kind: YouTube
+      priority: As needed
+      done: false
+      note: Fills gaps in the FPGA tool flow.
+    - title: 4. Assembly Language & Computer Architecture
+      url: https://www.youtube.com/watch?v=L1ung0wil9Y
+      kind: YouTube lecture
+      priority: Recommended
+      done: false
+      note: How C becomes assembly and flows through a pipeline. Background for reading compiled benchmarks and counting cycles.
+
+  added:
+    - title: CFU Playground (paper)
+      url: https://arxiv.org/pdf/2201.01863
+      kind: Google, Harvard, Purdue
+      priority: Read first
+      done: false
+      note: Almost our exact project, open source - a RISC-V soft core on FPGA with custom function units for TinyML. Code at github.com/google/CFU-Playground
+    - title: NEORV32 processor and Custom Functions Unit
+      url: https://github.com/stnolting/neorv32
+      kind: Open-source RISC-V core
+      priority: High
+      done: false
+      note: Clean reference for custom opcodes, multi-cycle units and C intrinsics, and for when to use a memory-mapped accelerator instead.
+    - title: Sigmoid approximations on FPGA (PLAN, A-law and others)
+      url: https://users.utcluj.ro/~atn/papers/ATN_2_2009_4.pdf
+      kind: Paper
+      priority: High
+      done: false
+      note: Compares sigmoid approximations by FPGA resources and error. A model for our own comparison table.
+    - title: Sigmoid with curvature-based piecewise linear fitting
+      url: https://www.mdpi.com/2079-9292/11/9/1365
+      kind: MDPI Electronics, 2022
+      priority: Medium
+      done: false
+      note: Surveys LUT, CORDIC, Taylor, polynomial and piecewise methods, and shows how to choose segment boundaries.
+    - title: Fixed-point tanh with lookup tables on FPGA
+      url: https://easychair.org/publications/preprint/CWMs
+      kind: EasyChair preprint
+      priority: Medium
+      done: false
+      note: How bit width affects LUT-based tanh accuracy, area and power. Helps choose the Q format.
+    - title: "I-BERT: Integer-only BERT Quantization"
+      url: https://arxiv.org/abs/2101.01321
+      kind: Paper (Softmax and GELU sections)
+      priority: High for Softmax
+      done: false
+      note: Integer-only exp - range reduction to (-ln 2, 0] plus a 2nd-order polynomial.
+    - title: Hardware Implementation of Multi-Rate Input SoftMax
+      url: https://scholarworks.boisestate.edu/electrical_facpubs/550
+      kind: MWSCAS 2021
+      priority: Medium
+      done: false
+      note: A small Softmax unit - ROM for exp, CORDIC reciprocal, pipelined.
+    - title: Hardware-oriented Softmax and RMSNorm approximations
+      url: https://www.mdpi.com/2072-666X/17/1/84
+      kind: Micromachines, 2025
+      priority: Optional
+      done: false
+      note: Fully fixed-point Softmax with an exp built from LUTs and one adder, no DSPs.
+    - title: Automatic custom instruction design for RISC-V (CIDRE)
+      url: https://arxiv.org/abs/2509.15782v1
+      kind: Paper
+      priority: Optional
+      done: false
+      note: Estimating a custom instruction's gain and critical-path impact before building it.
+    - title: RISC-V Unprivileged ISA specification
+      url: https://riscv.org/specifications/
+      kind: Reference
+      priority: Reference
+      done: false
+      note: Base instruction formats, R-type encoding, and the custom-0 / custom-1 opcode space.
+
+# ---------------------------------------------------------------- supervisor questions
+# Fill in answer when you have it; set settled: true when it is decided.
+questions:
+  - question: Which processor do we build on - your modular RISC core from the NEWCAS paper, or a RISC-V core we choose?
+    answer:
+    settled: false
+  - question: Which FPGA board, and which toolchain (Vivado, Quartus, open source)?
+    answer:
+    settled: false
+  - question: What number format will the model use - int8 quantized or a Q-format such as Q4.12?
+    answer:
+    settled: false
+  - question: Is Softmax expected as a custom instruction, a memory-mapped unit, or our choice?
+    answer:
+    settled: false
+  - question: Which sensor and model for the demo? Is there a trained model to start from?
+    answer:
+    settled: false
+  - question: What accuracy loss is acceptable versus the exact software version?
+    answer:
+    settled: false
+  - question: What are the milestones and deliverables per semester?
+    answer:
+    settled: false
